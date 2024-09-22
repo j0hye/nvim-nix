@@ -5,6 +5,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     gen-luarc.url = "github:mrcjkb/nix-gen-luarc-json";
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Add bleeding-edge plugins here.
     # They can be updated with `nix flake update` (make sure to commit the generated flake.lock)
@@ -19,6 +23,7 @@
     nixpkgs,
     flake-utils,
     gen-luarc,
+    neovim-nightly-overlay,
     ...
   }: let
     supportedSystems = [
@@ -28,10 +33,19 @@
       "aarch64-darwin"
     ];
 
-    # This is where the Neovim derivation is built.
-    neovim-overlay = import ./nix/neovim-overlay.nix {inherit inputs;};
   in
     flake-utils.lib.eachSystem supportedSystems (system: let
+
+      # Nightly package
+      nightly-package = neovim-nightly-overlay.packages.${system}.default;
+
+      # This is where the Neovim derivation is built.
+      neovim-overlay = import ./nix/neovim-overlay.nix {
+        inherit inputs;
+        # Use nightly
+        neovim-unwrapped = nightly-package;
+        };
+
       pkgs = import nixpkgs {
         inherit system;
         overlays = [
@@ -45,13 +59,13 @@
       };
       shell = pkgs.mkShell {
         name = "nvim-devShell";
-        buildInputs = with pkgs; [
-          # Tools for Lua and Nix development, useful for editing files in this repo
-          lua-language-server
-          nil
-          stylua
-          luajitPackages.luacheck
-        ];
+        # buildInputs = with pkgs; [
+        #   # Tools for Lua and Nix development, useful for editing files in this repo
+        #   lua-language-server
+        #   nil
+        #   stylua
+        #   luajitPackages.luacheck
+        # ];
         shellHook = ''
           # symlink the .luarc.json generated in the overlay
           ln -fs ${pkgs.nvim-luarc-json} .luarc.json
@@ -65,9 +79,7 @@
       devShells = {
         default = shell;
       };
-    })
-    // {
       # You can add this overlay to your NixOS configuration
       overlays.default = neovim-overlay;
-    };
+    });
 }
