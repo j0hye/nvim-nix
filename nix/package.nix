@@ -22,6 +22,7 @@ with lib; let
     cmp-nvim-lsp
     cmp-path
     cmp_luasnip
+    cmp-rg
 
     # Snippets
     luasnip
