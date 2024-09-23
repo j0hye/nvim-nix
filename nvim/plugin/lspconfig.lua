@@ -163,30 +163,30 @@ vim.diagnostic.config {
 }
 require('lspconfig.ui.windows').default_options.border = 'rounded'
 
--- if vim.fn.executable('lua_ls') then
---     local lspconfig = require('lspconfig')
---
---     local capabilities = vim.lsp.protocol.make_client_capabilities()
---     capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
---
---     local server = {
---         settings = {
---             Lua = {
---                 completion = {
---                     callSnippet = 'Replace',
---                 },
---                 -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
---                 diagnostics = { disable = { 'missing-fields' } },
---                 hint = {
---                     enable = true,
---                 },
---                 -- signatureHelp = {
---                 --     enable = false,
---                 -- },
---             },
---         },
---     }
---     server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
---
---     lspconfig['lua_ls'].setup(server)
--- end
+if vim.fn.executable('lua-language-server') then
+    local lspconfig = require('lspconfig')
+
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+
+    local server = {
+        settings = {
+            Lua = {
+                completion = {
+                    callSnippet = 'Replace',
+                },
+                -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+                diagnostics = { disable = { 'missing-fields' } },
+                hint = {
+                    enable = true,
+                },
+                -- signatureHelp = {
+                --     enable = false,
+                -- },
+            },
+        },
+    }
+    server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+    require('lazydev').setup {}
+    lspconfig.lua_ls.setup(server)
+end
