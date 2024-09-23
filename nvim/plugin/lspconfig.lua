@@ -111,7 +111,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             wrap = false,
             hi_parameter = 'LspSignatureActiveParameter',
         }
-        require('lsp_signature').setup(sig_opts)
+        require('lsp_signature').on_attach(sig_opts, event.buf)
     end,
 })
 
