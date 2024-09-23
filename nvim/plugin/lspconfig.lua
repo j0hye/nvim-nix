@@ -58,7 +58,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         map('<leader>f', function()
             require('conform').format()
         end, '[F]ormat')
-
         -- The following two autocommands are used to highlight references of the
         -- word under your cursor when your cursor rests there for a little while.
         --    See `:help CursorHold` for information about when this is executed
@@ -97,6 +96,22 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, 'Toggle inlay [h]ints')
         end
+
+        -- LSP Signature setup
+        local sig_opts = {
+            bind = true,
+            floating_window = true,
+            handler_opts = { border = 'rounded' },
+            hint_enable = false,
+            hint_prefix = {
+                above = '↙ ', -- when the hint is on the line above the current line
+                current = '← ', -- when the hint is on the same line
+                below = '↖ ', -- when the hint is on the line below the current line
+            },
+            wrap = false,
+            hi_parameter = 'LspSignatureActiveParameter',
+        }
+        require('lsp_signature').setup(sig_opts)
     end,
 })
 
@@ -148,47 +163,30 @@ vim.diagnostic.config {
 }
 require('lspconfig.ui.windows').default_options.border = 'rounded'
 
-if vim.fn.executable('lua_ls') then
-    local lspconfig = require('lspconfig')
-
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-
-    local server = {
-        settings = {
-            Lua = {
-                completion = {
-                    callSnippet = 'Replace',
-                },
-                -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-                diagnostics = { disable = { 'missing-fields' } },
-                hint = {
-                    enable = true,
-                },
-                -- signatureHelp = {
-                --     enable = false,
-                -- },
-            },
-        },
-    }
-    server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-
-    lspconfig['lua_ls'].setup(server)
-    require('lazydev').setup {}
-
-    -- LSP Signature setup
-    local sig_opts = {
-        bind = true,
-        floating_window = true,
-        handler_opts = { border = 'rounded' },
-        hint_enable = false,
-        hint_prefix = {
-            above = '↙ ', -- when the hint is on the line above the current line
-            current = '← ', -- when the hint is on the same line
-            below = '↖ ', -- when the hint is on the line below the current line
-        },
-        wrap = false,
-        hi_parameter = 'LspSignatureActiveParameter',
-    }
-    require('lsp_signature').setup(sig_opts)
-end
+-- if vim.fn.executable('lua_ls') then
+--     local lspconfig = require('lspconfig')
+--
+--     local capabilities = vim.lsp.protocol.make_client_capabilities()
+--     capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+--
+--     local server = {
+--         settings = {
+--             Lua = {
+--                 completion = {
+--                     callSnippet = 'Replace',
+--                 },
+--                 -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+--                 diagnostics = { disable = { 'missing-fields' } },
+--                 hint = {
+--                     enable = true,
+--                 },
+--                 -- signatureHelp = {
+--                 --     enable = false,
+--                 -- },
+--             },
+--         },
+--     }
+--     server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+--
+--     lspconfig['lua_ls'].setup(server)
+-- end
