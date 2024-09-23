@@ -1,7 +1,7 @@
-if vim.g.did_load_neogit_plugin then
+if vim.g.plugin_neogit then
   return
 end
-vim.g.did_load_neogit_plugin = true
+vim.g.plugin_neogit = 1
 
 local neogit = require('neogit')
 
@@ -20,10 +20,12 @@ neogit.setup {
     },
   },
 }
-vim.keymap.set('n', '<leader>go', neogit.open, { noremap = true, silent = true, desc = 'neo[g]it [o]pen' })
-vim.keymap.set('n', '<leader>gs', function()
+vim.keymap.set('n', '<leader>gno', neogit.open, { noremap = true, silent = true, desc = '[O]pen' })
+
+vim.keymap.set('n', '<leader>gns', function()
   neogit.open { kind = 'auto' }
-end, { noremap = true, silent = true, desc = 'neo[g]it open [s]plit' })
-vim.keymap.set('n', '<leader>gc', function()
+end, { noremap = true, silent = true, desc = 'Open [s]plit' })
+
+vim.keymap.set('n', '<leader>gnc', function()
   neogit.open { 'commit' }
-end, { noremap = true, silent = true, desc = 'neo[g]it [c]ommit' })
+end, { noremap = true, silent = true, desc = '[C]ommit' })

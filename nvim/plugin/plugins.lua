@@ -1,9 +1,9 @@
-if vim.g.did_load_plugins_plugin then
-  return
+if vim.g.plugin_plugins then
+    return
 end
-vim.g.did_load_plugins_plugin = true
-
+vim.g.plugin_plugins = 1
 -- many plugins annoyingly require a call to a 'setup' function to be loaded,
 -- even with default configs
-
-require('nvim-surround').setup()
+require('ibl').setup()
+require('dressing').setup()
+require('lazydev').setup {}

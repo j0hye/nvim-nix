@@ -17,65 +17,77 @@ with lib; let
 
   # vimPlugins
   all-plugins = with pkgs.vimPlugins; [
+    # Completion
+    nvim-cmp
+    cmp-nvim-lsp
+    cmp-path
+    cmp_luasnip
+
+    # Snippets
+    luasnip
+
+    # Formatters and LSP
     conform-nvim
+    nvim-lspconfig
+    fidget-nvim
+    lazydev-nvim
+    lsp_signature-nvim
+    outline-nvim
+
+    # Treesitter
     nvim-treesitter.withAllGrammars
-    luasnip # snippets | https://github.com/l3mon4d3/luasnip/
+    nvim-treesitter-textobjects
+    nvim-ts-context-commentstring
+    nvim-treesitter-context
 
-    nvim-cmp # https://github.com/hrsh7th/nvim-cmp
-    cmp_luasnip # snippets autocompletion extension for nvim-cmp | https://github.com/saadparwaiz1/cmp_luasnip/
-    lspkind-nvim # vscode-like LSP pictograms | https://github.com/onsails/lspkind.nvim/
-    cmp-nvim-lsp # LSP as completion source | https://github.com/hrsh7th/cmp-nvim-lsp/
-    cmp-nvim-lsp-signature-help # https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/
-    cmp-buffer # current buffer as completion source | https://github.com/hrsh7th/cmp-buffer/
-    cmp-path # file paths as completion source | https://github.com/hrsh7th/cmp-path/
-    cmp-nvim-lua # neovim lua API as completion source | https://github.com/hrsh7th/cmp-nvim-lua/
-    cmp-cmdline # cmp command line suggestions
-    cmp-cmdline-history # cmp command line history suggestions
+    # Git
+    neogit
+    gitsigns-nvim
 
-    diffview-nvim # https://github.com/sindrets/diffview.nvim/
-    neogit # https://github.com/TimUntersberger/neogit/
-    gitsigns-nvim # https://github.com/lewis6991/gitsigns.nvim/
-    vim-fugitive # https://github.com/tpope/vim-fugitive/
+    # Telescope
+    telescope-nvim
+    telescope-fzf-native-nvim
+    telescope-ui-select-nvim
 
-    telescope-nvim # https://github.com/nvim-telescope/telescope.nvim/
-    telescope-fzy-native-nvim # https://github.com/nvim-telescope/telescope-fzy-native.nvim
+    # UI
+    oil-nvim
+    lualine-nvim
+    nvim-navic
+    which-key-nvim
+    dressing-nvim
+    nvim-notify
+    noice-nvim
+    indent-blankline-nvim
 
-    lualine-nvim # Status line | https://github.com/nvim-lualine/lualine.nvim/
-    nvim-navic # Add LSP location to lualine | https://github.com/SmiteshP/nvim-navic
-    statuscol-nvim # Status column | https://github.com/luukvbaal/statuscol.nvim/
-    nvim-treesitter-context # nvim-treesitter-context
+    # Misc
+    trouble-nvim
+    flash-nvim
+    toggleterm-nvim
+    nvim-surround
+    nvim-spider
+    nvim-unception
+    todo-comments-nvim
 
-    vim-unimpaired # predefined ] and [ navigation keymaps | https://github.com/tpope/vim-unimpaired/
-    eyeliner-nvim # Highlights unique characters for f/F and t/T motions | https://github.com/jinh0/eyeliner.nvim
-    nvim-surround # https://github.com/kylechui/nvim-surround/
-    nvim-treesitter-textobjects # https://github.com/nvim-treesitter/nvim-treesitter-textobjects/
-    nvim-ts-context-commentstring # https://github.com/joosepalviste/nvim-ts-context-commentstring/
-
-    nvim-unception # Prevent nested neovim sessions | nvim-unception
-
+    # Deps
+    nvim-web-devicons
     sqlite-lua
     plenary-nvim
-    nvim-web-devicons
-    vim-repeat
+    nvim-nio
+    nui-nvim
 
-    which-key-nvim
+    # Mini
+    mini-nvim
+
+    # Colorscheme
+    gruvbox-nvim
   ];
   extraPackages = with pkgs; [
     # language servers, etc.
   ];
   extraLuaPackages = ps:
     with ps; [
-      # Neorg dependencies. Probably dependencies of other plugins as well.
-      # Ideally the plugin dependencies are managed by nix but it is not the
-      # case right now. See here:
-      # https://github.com/NixOS/nixpkgs/issues/306367.
-      lua-utils-nvim
-      nui-nvim
-      nvim-nio
       pathlib-nvim
-
-      # Nvim-spider dependency to identify words with UTF-8 accents.
-      luautf8
+      luautf8 # nvim-spider dep
     ];
 in {
   nvim-pkg = mkNeovim {

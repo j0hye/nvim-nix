@@ -1,159 +1,71 @@
-if vim.g.did_load_telescope_plugin then
+if vim.g.plugin_telescope then
   return
 end
-vim.g.did_load_telescope_plugin = true
+vim.g.plugin_telescope = 1
 
-local telescope = require('telescope')
-local actions = require('telescope.actions')
+local open_with_trouble = require('trouble.sources.telescope').open
+local add_to_trouble = require('trouble.sources.telescope').add
 
-local builtin = require('telescope.builtin')
-
-local layout_config = {
-  vertical = {
-    width = function(_, max_columns)
-      return math.floor(max_columns * 0.99)
-    end,
-    height = function(_, _, max_lines)
-      return math.floor(max_lines * 0.99)
-    end,
-    prompt_position = 'bottom',
-    preview_cutoff = 0,
-  },
-}
-
--- Fall back to find_files if not in a git repo
-local project_files = function()
-  local opts = {} -- define here if you want to define something
-  local ok = pcall(builtin.git_files, opts)
-  if not ok then
-    builtin.find_files(opts)
-  end
-end
-
----@param picker function the telescope picker to use
-local function grep_current_file_type(picker)
-  local current_file_ext = vim.fn.expand('%:e')
-  local additional_vimgrep_arguments = {}
-  if current_file_ext ~= '' then
-    additional_vimgrep_arguments = {
-      '--type',
-      current_file_ext,
-    }
-  end
-  local conf = require('telescope.config').values
-  picker {
-    vimgrep_arguments = vim.tbl_flatten {
-      conf.vimgrep_arguments,
-      additional_vimgrep_arguments,
-    },
-  }
-end
-
---- Grep the string under the cursor, filtering for the current file type
-local function grep_string_current_file_type()
-  grep_current_file_type(builtin.grep_string)
-end
-
---- Live grep, filtering for the current file type
-local function live_grep_current_file_type()
-  grep_current_file_type(builtin.live_grep)
-end
-
---- Like live_grep, but fuzzy (and slower)
-local function fuzzy_grep(opts)
-  opts = vim.tbl_extend('error', opts or {}, { search = '', prompt_title = 'Fuzzy grep' })
-  builtin.grep_string(opts)
-end
-
-local function fuzzy_grep_current_file_type()
-  grep_current_file_type(fuzzy_grep)
-end
-
-vim.keymap.set('n', '<leader>tp', function()
-  builtin.find_files()
-end, { desc = '[t]elescope find files - ctrl[p] style' })
-vim.keymap.set('n', '<M-p>', builtin.oldfiles, { desc = '[telescope] old files' })
-vim.keymap.set('n', '<C-g>', builtin.live_grep, { desc = '[telescope] live grep' })
-vim.keymap.set('n', '<leader>tf', fuzzy_grep, { desc = '[t]elescope [f]uzzy grep' })
-vim.keymap.set('n', '<M-f>', fuzzy_grep_current_file_type, { desc = '[telescope] fuzzy grep filetype' })
-vim.keymap.set('n', '<M-g>', live_grep_current_file_type, { desc = '[telescope] live grep filetype' })
-vim.keymap.set(
-  'n',
-  '<leader>t*',
-  grep_string_current_file_type,
-  { desc = '[t]elescope grep current string [*] in current filetype' }
-)
-vim.keymap.set('n', '<leader>*', builtin.grep_string, { desc = '[telescope] grep current string [*]' })
-vim.keymap.set('n', '<leader>tg', project_files, { desc = '[t]elescope project files [g]' })
-vim.keymap.set('n', '<leader>tc', builtin.quickfix, { desc = '[t]elescope quickfix list [c]' })
-vim.keymap.set('n', '<leader>tq', builtin.command_history, { desc = '[t]elescope command history [q]' })
-vim.keymap.set('n', '<leader>tl', builtin.loclist, { desc = '[t]elescope [l]oclist' })
-vim.keymap.set('n', '<leader>tr', builtin.registers, { desc = '[t]elescope [r]egisters' })
-vim.keymap.set('n', '<leader>tbb', builtin.buffers, { desc = '[t]elescope [b]uffers [b]' })
-vim.keymap.set(
-  'n',
-  '<leader>tbf',
-  builtin.current_buffer_fuzzy_find,
-  { desc = '[t]elescope current [b]uffer [f]uzzy find' }
-)
-vim.keymap.set('n', '<leader>td', builtin.lsp_document_symbols, { desc = '[t]elescope lsp [d]ocument symbols' })
-vim.keymap.set(
-  'n',
-  '<leader>to',
-  builtin.lsp_dynamic_workspace_symbols,
-  { desc = '[t]elescope lsp dynamic w[o]rkspace symbols' }
-)
-
-telescope.setup {
+require('telescope').setup {
+  -- You can put your default mappings / updates / etc. in here
+  --  All the info you're looking for is in `:help telescope.setup()`
   defaults = {
-    path_display = {
-      'truncate',
-    },
-    layout_strategy = 'vertical',
-    layout_config = layout_config,
     mappings = {
       i = {
-        ['<C-q>'] = actions.send_to_qflist,
-        ['<C-l>'] = actions.send_to_loclist,
-        -- ['<esc>'] = actions.close,
-        ['<C-s>'] = actions.cycle_previewers_next,
-        ['<C-a>'] = actions.cycle_previewers_prev,
+        ['<c-t>'] = open_with_trouble,
+        ['<c-a>'] = add_to_trouble,
       },
       n = {
-        q = actions.close,
+        ['<c-t>'] = open_with_trouble,
+        ['<c-a>'] = add_to_trouble,
       },
     },
-    preview = {
-      treesitter = true,
-    },
-    history = {
-      path = vim.fn.stdpath('data') .. '/telescope_history.sqlite3',
-      limit = 1000,
-    },
-    color_devicons = true,
-    set_env = { ['COLORTERM'] = 'truecolor' },
-    prompt_prefix = '   ',
-    selection_caret = '  ',
-    entry_prefix = '  ',
-    initial_mode = 'insert',
-    vimgrep_arguments = {
-      'rg',
-      '-L',
-      '--color=never',
-      '--no-heading',
-      '--with-filename',
-      '--line-number',
-      '--column',
-      '--smart-case',
-    },
   },
+  -- pickers = {}
   extensions = {
-    fzy_native = {
-      override_generic_sorter = false,
-      override_file_sorter = true,
+    ['ui-select'] = {
+      require('telescope.themes').get_dropdown(),
     },
   },
 }
 
-telescope.load_extension('fzy_native')
--- telescope.load_extension('smart_history')
+-- Enable Telescope extensions if they are installed
+pcall(require('telescope').load_extension, 'fzf')
+pcall(require('telescope').load_extension, 'ui-select')
+pcall(require('telescope').load_extension, 'noice')
+
+-- See `:help telescope.builtin`
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = 'Search [h]elp' })
+vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = 'Search [k]eymaps' })
+vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = 'Search [f]iles' })
+vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = 'Search [s]elect telescope' })
+vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = 'Search current [w]ord' })
+vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = 'Search by [g]rep' })
+vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = 'Search [d]iagnostics' })
+vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = 'Search [r]esume' })
+vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = 'Search recent files [.]' })
+vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+-- Slightly advanced example of overriding default behavior and theme
+vim.keymap.set('n', '<leader>/', function()
+  -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+  builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+    winblend = 10,
+    previewer = false,
+  })
+end, { desc = '[/] Fuzzy search current buffer' })
+
+-- It's also possible to pass additional configuration options.
+--  See `:help telescope.builtin.live_grep()` for information about particular keys
+vim.keymap.set('n', '<leader>s/', function()
+  builtin.live_grep {
+    grep_open_files = true,
+    prompt_title = 'Live Grep in Open Files',
+  }
+end, { desc = 'Search [/] in open files' })
+
+-- Shortcut for searching your Neovim configuration files
+vim.keymap.set('n', '<leader>sn', function()
+  builtin.find_files { cwd = vim.fn.stdpath('config') }
+end, { desc = 'Search [n]eovim files' })
