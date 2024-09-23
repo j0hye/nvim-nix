@@ -3,18 +3,15 @@ local fn = vim.fn
 local opt = vim.o
 local g = vim.g
 
--- <leader> key. Defaults to `\`. Some people prefer space.
--- g.mapleader = ' '
--- g.maplocalleader = ' '
+g.mapleader = ' '
+g.maplocalleader = ' '
 
 opt.compatible = false
 
 -- Enable true colour support
 if fn.has('termguicolors') then
-  opt.termguicolors = true
+    opt.termguicolors = true
 end
-
--- See :h <option> to see what the options do
 
 -- Search down into subfolders
 opt.path = vim.o.path .. '**'
@@ -22,18 +19,23 @@ opt.path = vim.o.path .. '**'
 opt.number = true
 opt.relativenumber = true
 opt.cursorline = true
-opt.lazyredraw = true
+opt.lazyredraw = false
 opt.showmatch = true -- Highlight matching parentheses, etc
+opt.matchtime = 0
 opt.incsearch = true
 opt.hlsearch = true
+opt.wrap = false
 
-opt.spell = true
+opt.spell = false
 opt.spelllang = 'en'
 
+opt.tabstop = 4
+opt.softtabstop = 4
+opt.shiftwidth = 4
 opt.expandtab = true
-opt.tabstop = 2
-opt.softtabstop = 2
-opt.shiftwidth = 2
+opt.smartindent = true
+opt.breakindent = true
+
 opt.foldenable = true
 opt.history = 2000
 opt.nrformats = 'bin,hex' -- 'octal'
@@ -42,55 +44,20 @@ opt.splitright = true
 opt.splitbelow = true
 opt.cmdheight = 0
 
+opt.mouse = 'a'
+
+opt.ignorecase = true
+opt.smartcase = true
+
+opt.updatetime = 50
+
+opt.clipboard = 'unnamed,unnamedplus'
+
+opt.scrolloff = 8
+
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
--- Configure Neovim diagnostic messages
-
-local function prefix_diagnostic(prefix, diagnostic)
-  return string.format(prefix .. ' %s', diagnostic.message)
-end
-
-vim.diagnostic.config {
-  virtual_text = {
-    prefix = '',
-    format = function(diagnostic)
-      local severity = diagnostic.severity
-      if severity == vim.diagnostic.severity.ERROR then
-        return prefix_diagnostic('󰅚', diagnostic)
-      end
-      if severity == vim.diagnostic.severity.WARN then
-        return prefix_diagnostic('⚠', diagnostic)
-      end
-      if severity == vim.diagnostic.severity.INFO then
-        return prefix_diagnostic('ⓘ', diagnostic)
-      end
-      if severity == vim.diagnostic.severity.HINT then
-        return prefix_diagnostic('󰌶', diagnostic)
-      end
-      return prefix_diagnostic('■', diagnostic)
-    end,
-  },
-  signs = {
-    text = {
-      -- Requires Nerd fonts
-      [vim.diagnostic.severity.ERROR] = '󰅚',
-      [vim.diagnostic.severity.WARN] = '⚠',
-      [vim.diagnostic.severity.INFO] = 'ⓘ',
-      [vim.diagnostic.severity.HINT] = '󰌶',
-    },
-  },
-  update_in_insert = false,
-  underline = true,
-  severity_sort = true,
-  float = {
-    focusable = false,
-    style = 'minimal',
-    border = 'rounded',
-    source = 'if_many',
-    header = '',
-    prefix = '',
-  },
-}
+vim.wo.signcolumn = 'yes' -- Always shows the sign column (where we put gitsigns and warnings).
 
 g.editorconfig = true
 
