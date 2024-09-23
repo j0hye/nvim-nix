@@ -13,7 +13,7 @@ with lib; let
       version = src.lastModifiedDate;
     };
   # This is the helper function that builds the Neovim derivation.
-  mkNeovim = pkgs.callPackage ./mkNeovim.nix {inherit pkgs-wrapNeovim;};
+  mkNeovim = pkgs.callPackage ./mkNeovim.nix {};
 
   # vimPlugins
   all-plugins = with pkgs.vimPlugins; [
