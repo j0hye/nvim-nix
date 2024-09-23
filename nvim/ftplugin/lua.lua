@@ -7,7 +7,7 @@ if vim.fn.executable(lua_ls_cmd) ~= 1 then
     return
 end
 
-require('lspconfig').lua_ls.setup()
+require('lspconfig').lua_ls.setup {}
 
 --
 -- local root_files = {
