@@ -3,18 +3,39 @@ if vim.g.plugin_lspconfig then
 end
 vim.g.plugin_lspconfig = 1
 
+local lspconfig = require('lspconfig')
+
+-- C
+if vim.fn.executable('clangd') then
+    lspconfig.clangd.setup {}
+end
+
+-- Lua
 if vim.fn.executable('lua-language-server') then
-    local lspconfig = require('lspconfig')
     local server = {
         settings = {
             Lua = {
+                workspace = {
+                    checkThirdParty = false,
+                },
+                codeLens = {
+                    enable = true,
+                },
                 completion = {
                     callSnippet = 'Replace',
+                },
+                doc = {
+                    privateName = { '^_' },
                 },
                 -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
                 diagnostics = { disable = { 'missing-fields' } },
                 hint = {
                     enable = true,
+                    setType = false,
+                    paramType = true,
+                    paramName = 'Disable',
+                    semicolon = 'Disable',
+                    arrayIndex = 'Disable',
                 },
                 signatureHelp = {
                     enable = true,
@@ -24,6 +45,14 @@ if vim.fn.executable('lua-language-server') then
     }
     lspconfig.lua_ls.setup(server)
 end
+
+-- Nix
+if vim.fn.executable('nil') then
+    lspconfig.nil_ls.setup {}
+end
+-- if vim.fn.executable('nixd') then
+--     lspconfig.nixd.setup {}
+-- end
 
 -- LSP Signature setup
 local sig_opts = {

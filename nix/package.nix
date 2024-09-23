@@ -22,7 +22,6 @@ with lib; let
     cmp-nvim-lsp
     cmp-path
     cmp_luasnip
-    cmp-rg
 
     # Snippets
     luasnip
@@ -84,6 +83,7 @@ with lib; let
   ];
   extraPackages = with pkgs; [
     # language servers, etc.
+    clang-tools
   ];
   extraLuaPackages = ps:
     with ps; [
