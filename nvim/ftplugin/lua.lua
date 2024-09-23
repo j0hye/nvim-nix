@@ -6,8 +6,9 @@ local lua_ls_cmd = 'lua-language-server'
 if vim.fn.executable(lua_ls_cmd) ~= 1 then
     return
 end
-vim.lsp.start()
--- require('lspconfig')['lua-ls'].setup()
+
+require('lspconfig').lua_ls.setup()
+
 --
 -- local root_files = {
 --   '.luarc.json',
