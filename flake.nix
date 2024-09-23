@@ -33,11 +33,8 @@
       "aarch64-darwin"
     ];
 
-  in
-    flake-utils.lib.eachSystem supportedSystems (system: let
-
       # Nightly package
-      nightly-package = neovim-nightly-overlay.packages.${system}.default;
+      nightly-package = neovim-nightly-overlay.packages."x86_64-linux".default;
 
       # This is where the Neovim derivation is built.
       neovim-overlay = import ./nix/neovim-overlay.nix {
@@ -45,6 +42,9 @@
         # Use nightly
         neovim-unwrapped = nightly-package;
         };
+  in
+    flake-utils.lib.eachSystem supportedSystems (system: let
+
 
       pkgs = import nixpkgs {
         inherit system;
@@ -78,8 +78,10 @@
       };
       devShells = {
         default = shell;
-      };
+      };      
+    })
+    // {
       # You can add this overlay to your NixOS configuration
       overlays.default = neovim-overlay;
-    });
+    };
 }
