@@ -58,6 +58,7 @@ with lib; let
     nvim-notify
     noice-nvim
     indent-blankline-nvim
+    guess-indent-nvim
 
     # Misc
     trouble-nvim
