@@ -1,30 +1,51 @@
 if vim.g.plugin_keymaps then
-  return
+    return
 end
 vim.g.plugin_keymaps = 1
 
 local fn = vim.fn
 local keymap = vim.keymap
 
+-- : to ö
+keymap.set({ 'n', 'v' }, 'ö', ':', { desc = 'which_key_ignore' })
+
+-- Shift-h/l start/end of line
+keymap.set({ 'n', 'x', 'o' }, 'H', '^', { desc = 'First char of line' })
+keymap.set({ 'n', 'x', 'o' }, 'L', '$', { desc = 'Last char of line' })
+
+-- :noh to esc
+keymap.set({ 'n', 'x', 'i' }, '<esc>', '<cmd>noh<cr><esc>', { desc = 'which_key_ignore' })
+
+-- Move lines with alt+jk
+keymap.set('n', '<A-j>', '<cmd>m .+1<cr>==', { desc = 'which_key_ignore' })
+keymap.set('n', '<A-k>', '<cmd>m .-2<cr>==', { desc = 'which_key_ignore' })
+
+keymap.set('x', '<A-j>', ":m '>+1<cr>gv=gv", { desc = 'which_key_ignore' })
+keymap.set('x', '<A-k>', ":m '<-2<cr>gv=gv", { desc = 'which_key_ignore' })
+
+keymap.set('i', '<A-j>', '<esc><cmd>m .+1<cr>==gi', { desc = 'which_key_ignore' })
+keymap.set('i', '<A-k>', '<esc><cmd>m .-2<cr>==gi', { desc = 'which_key_ignore' })
+
+-- Window movement
+keymap.set({ 'n', 'x' }, '<C-h>', '<C-w>h', { desc = 'which_key_ignore' })
+keymap.set({ 'n', 'x' }, '<C-j>', '<C-w>j', { desc = 'which_key_ignore' })
+keymap.set({ 'n', 'x' }, '<C-k>', '<C-w>k', { desc = 'which_key_ignore' })
+keymap.set({ 'n', 'x' }, '<C-l>', '<C-w>l', { desc = 'which_key_ignore' })
+
 -- Yank from current position till end of current line
 keymap.set('n', 'Y', 'y$', { silent = true, desc = '[Y]ank to end of line' })
 
--- Buffer list navigation
-keymap.set('n', '[b', vim.cmd.bprevious, { silent = true, desc = 'Previous [b]uffer' })
-keymap.set('n', ']b', vim.cmd.bnext, { silent = true, desc = 'Next [b]uffer' })
-keymap.set('n', '[B', vim.cmd.bfirst, { silent = true, desc = 'First [B]uffer' })
-keymap.set('n', ']B', vim.cmd.blast, { silent = true, desc = 'Last [B]uffer' })
-
--- Shortcut for expanding to current buffer's directory in command mode
-keymap.set('c', '%%', function()
-  if fn.getcmdtype() == ':' then
-    return fn.expand('%:h') .. '/'
-  else
-    return '%%'
-  end
-end, { expr = true, desc = "expand to current buffer's directory" })
-
+-- Move and center
 keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Move [d]own half-page and center' })
 keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Move [u]p half-page and center' })
 keymap.set('n', '<C-f>', '<C-f>zz', { desc = 'Move down [f]ull-page and center' })
 keymap.set('n', '<C-b>', '<C-b>zz', { desc = 'Move up full-page and center' })
+
+-- Shortcut for expanding to current buffer's directory in command mode
+keymap.set('c', '%%', function()
+    if fn.getcmdtype() == ':' then
+        return fn.expand('%:h') .. '/'
+    else
+        return '%%'
+    end
+end, { expr = true, desc = "expand to current buffer's directory" })
