@@ -9,19 +9,6 @@ local function augroup(name)
     return vim.api.nvim_create_augroup(name, { clear = true })
 end
 
--- Toggle diagnostics. We keep track of the toggling state.
-local show_diagnostics = true
-local function toggle_diagnostics()
-    show_diagnostics = not show_diagnostics
-    vim.diagnostic.enable(show_diagnostics)
-
-    if show_diagnostics then
-        vim.notify('Diagnostics activated.')
-    else
-        vim.notify('Diagnostics hidden.')
-    end
-end
-
 -- LSP Attach
 api.nvim_create_autocmd('LspAttach', {
     group = augroup('lsp-attach'),
@@ -34,61 +21,51 @@ api.nvim_create_autocmd('LspAttach', {
             return
         end
 
-        vim.keymap.set('n', 'gl', function()
-            return vim.diagnostic.open_float(nil, { focus = false, border = 'rounded' })
-        end, { desc = 'Show diagnostics' })
-        vim.keymap.set('n', '<leader>ld', toggle_diagnostics, { desc = 'Toggle [d]iagnostics' })
-
-        if client.server_capabilities.completionProvider then
-            -- Enable completion triggered by <c-x><c-o>.
-            vim.bo[event.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+        local map = function(keys, func, desc, mode)
+            mode = mode or 'n'
+            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
         end
 
-        if client.server_capabilities.definitionProvider then
-            vim.bo[event.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
-            vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition', buffer = event.buf })
-        end
+        map('gd', require('telescope.builtin').lsp_definitions, 'Goto definition')
+        map('gD', vim.lsp.buf.declaration, 'Goto declaration')
+        map('gr', require('telescope.builtin').lsp_references, 'Goto references')
+        map('gi', require('telescope.builtin').lsp_implementations, 'Goto implementation')
+        map('<leader>d', require('telescope.builtin').lsp_type_definitions, 'Type [d]efinition')
+        map('<leader>ld', require('telescope.builtin').lsp_document_symbols, '[D]ocument symbols')
+        map('<leader>lw', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace symbols')
+        map('<leader>cr', vim.lsp.buf.rename, '[R]ename')
+        map('<leader>ca', vim.lsp.buf.code_action, 'Code [a]ction', { 'n', 'x' })
+        map('<leader>cl', vim.lsp.codelens.run, 'Run Code[l]ens')
+        map('<C-k>', vim.lsp.buf.signature_help, 'Show signature help', 'i')
 
-        if client.server_capabilities.declarationProvider then
-            vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration', buffer = event.buf })
-        end
+        -- Format with Conform and LSP fallback
+        map('<leader>f', function()
+            require('conform').format()
+        end, '[F]ormat buffer')
 
-        if client.server_capabilities.documentRangeFormattingProvider then
-            vim.keymap.set('v', '<leader>lf', function()
-                vim.lsp.buf.range_formatting { async = true }
-            end, { desc = 'Range [f]ormat', buffer = event.buf })
-        end
+        -- LSP Range format
+        map('<leader>f', function()
+            vim.lsp.buf.range_formatting { async = true }
+        end, '[F]ormat range', 'v')
 
-        if client.server_capabilities.signatureHelpProvider then
-            vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Show signature', buffer = event.buf })
-        end
-
-        if client.server_capabilities.implementationProvider then
-            vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { desc = 'Go to implementation', buffer = event.buf })
-        end
-
-        vim.keymap.set('n', '<leader>d', function()
+        -- Show line diagnostics
+        map('<leader>cd', function()
             local _, winid = vim.diagnostic.open_float(nil, { scope = 'line' })
             if not winid then
                 vim.notify('No diagnostic found', vim.log.levels.INFO)
                 return
             end
             vim.api.nvim_win_set_config(winid or 0, { focusable = true })
-        end, { noremap = true, silent = true, desc = 'Show line [d]iagnostics' })
+        end, 'Show line [d]iagnostics')
 
-        -- #TODO byt till telescope
-        if client.server_capabilities.workspaceSymbolProvider then
-            vim.keymap.set(
-                'n',
-                '<leader>lw',
-                vim.lsp.buf.workspace_symbol,
-                { desc = 'List [w]orkspace symbols', buffer = event.buf }
-            )
+        -- Toggle inlay hints
+        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+            map('<leader>th', function()
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            end, 'Toggle inlay [h]ints')
         end
-        -- #TODO: Code action, Codelens, format, workspace/doc symbols, toggle inlay hints
-        --- goto references, rename
 
-        -- Codelens refresh
+        -- Codelens auto refresh
         if client.server_capabilities.codeLensProvider then
             vim.api.nvim_create_autocmd({ 'InsertLeave', 'BufWritePost', 'TextChanged' }, {
                 group = augroup('cl-refresh'),
@@ -102,15 +79,16 @@ api.nvim_create_autocmd('LspAttach', {
 
         -- Cursor word highlight
         if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+            local cursorword_hl = augroup('cursor-hl')
             api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 buffer = event.buf,
-                group = augroup('cursor-hl'),
+                group = cursorword_hl,
                 callback = vim.lsp.buf.document_highlight,
             })
 
             api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
                 buffer = event.buf,
-                group = augroup('cursor-hl'),
+                group = cursorword_hl,
                 callback = vim.lsp.buf.clear_references,
             })
 
