@@ -30,7 +30,7 @@ api.nvim_create_autocmd('LspAttach', {
         map('gD', vim.lsp.buf.declaration, 'Goto declaration')
         map('gr', require('telescope.builtin').lsp_references, 'Goto references')
         map('gi', require('telescope.builtin').lsp_implementations, 'Goto implementation')
-        map('<leader>d', require('telescope.builtin').lsp_type_definitions, 'Type [d]efinition')
+        map('<leader>cd', require('telescope.builtin').lsp_type_definitions, 'Type [d]efinition')
         map('<leader>ld', require('telescope.builtin').lsp_document_symbols, '[D]ocument symbols')
         map('<leader>lw', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace symbols')
         map('<leader>cr', vim.lsp.buf.rename, '[R]ename')
@@ -60,7 +60,7 @@ api.nvim_create_autocmd('LspAttach', {
 
         -- Toggle inlay hints
         if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-            map('<leader>th', function()
+            map('<leader>h', function()
                 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, 'Toggle inlay [h]ints')
         end
