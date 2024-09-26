@@ -41,6 +41,21 @@ keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Move [u]p half-page and center' })
 keymap.set('n', '<C-f>', '<C-f>zz', { desc = 'Move down [f]ull-page and center' })
 keymap.set('n', '<C-b>', '<C-b>zz', { desc = 'Move up full-page and center' })
 
+-- UI
+keymap.set('n', '<leader>ui', '<cmd>LspInfo<CR>', { desc = 'Show LSP [i]nfo' })
+keymap.set('n', '<leader>un', '<cmd>Telescope notify<CR>', { desc = 'Show [n]otifications' })
+keymap.set('n', '<leader>uc', '<cmd>NoiceDismiss<CR>', { desc = '[C]lear notifications' })
+keymap.set('n', '<leader>ul', function()
+    if vim.wo.relativenumber then
+        vim.wo.relativenumber = false
+        vim.notify('Relative line numbers off', vim.log.levels.INFO)
+    else
+        vim.wo.relativenumber = true
+        vim.notify('Relative line numbers on', vim.log.levels.INFO)
+    end
+end, { desc = 'Toggle relative [l]ine numbers' })
+vim.keymap.set('n', '<leader>un', '<cmd>Telescope notify<CR>', { desc = 'Show [n]otifications' })
+
 -- Shortcut for expanding to current buffer's directory in command mode
 keymap.set('c', '%%', function()
     if fn.getcmdtype() == ':' then

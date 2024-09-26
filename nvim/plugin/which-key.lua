@@ -18,6 +18,7 @@ local wk = require('which-key')
 wk.add {
     mode = { 'n', 'v' },
     { '<leader>c', group = '[C]ode' },
+    { '<leader>d', group = '[D]iagnostics - Trouble' },
 
     { '<leader>g', group = '[G]it' },
     { '<leader>gd', group = '[D]iffview' },
@@ -27,9 +28,8 @@ wk.add {
     { '<leader>gn', group = '[N]eogit' },
 
     { '<leader>l', group = '[L]SP' },
-    { '<leader>d', group = '[D]iagnostics - Trouble' },
-
     { '<leader>s', group = '[S]earch' },
     { '<leader>t', group = '[T]elescope' },
+    { '<leader>u', group = '[U]I' },
     { '<leader>w', group = '[W]orkspace' },
 }
