@@ -52,6 +52,8 @@ with lib; let
     # UI
     oil-nvim
     lualine-nvim
+    bufferline-nvim
+    vim-bbye
     nvim-navic
     which-key-nvim
     dressing-nvim
@@ -68,6 +70,7 @@ with lib; let
     nvim-spider
     nvim-unception
     todo-comments-nvim
+    nvim-autopairs
 
     # Deps
     nvim-web-devicons

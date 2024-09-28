@@ -1,87 +1,70 @@
 if vim.g.plugin_lualine then
-  return
+    return
 end
 vim.g.plugin_lualine = 1
 
-local navic = require('nvim-navic')
-navic.setup {}
+local clients_lsp = function()
+    ---@diagnostic disable-next-line: deprecated
+    local clients = vim.lsp.get_active_clients()
+    if next(clients) == nil then
+        return ''
+    end
 
----Indicators for special modes,
----@return string status
-local function extra_mode_status()
-  -- recording macros
-  local reg_recording = vim.fn.reg_recording()
-  if reg_recording ~= '' then
-    return ' @' .. reg_recording
-  end
-  -- executing macros
-  local reg_executing = vim.fn.reg_executing()
-  if reg_executing ~= '' then
-    return ' @' .. reg_executing
-  end
-  -- ix mode (<C-x> in insert mode to trigger different builtin completion sources)
-  local mode = vim.api.nvim_get_mode().mode
-  if mode == 'ix' then
-    return '^X: (^]^D^E^F^I^K^L^N^O^Ps^U^V^Y)'
-  end
-  return ''
+    local c = {}
+    for _, client in pairs(clients) do
+        table.insert(c, client.name)
+    end
+    return '  ' .. table.concat(c, '|')
 end
 
 require('lualine').setup {
-  globalstatus = true,
-  sections = {
-    lualine_c = {
-      -- nvim-navic
-      { navic.get_location, cond = navic.is_available },
+    options = {
+        theme = 'auto',
+        component_separators = '',
+        section_separators = { left = '', right = '' },
     },
-    lualine_z = {
-      -- (see above)
-      { extra_mode_status },
-    },
-  },
-  options = {
-    theme = 'auto',
-  },
-  -- Example top tabline configuration (this may clash with other plugins)
-  tabline = {
-    lualine_a = {
-      {
-        'tabs',
-        mode = 1,
-      },
-    },
-    lualine_b = {
-      {
-        'buffers',
-        show_filename_only = true,
-        show_bufnr = true,
-        mode = 4,
-        filetype_names = {
-          TelescopePrompt = 'Telescope',
-          dashboard = 'Dashboard',
-          fzf = 'FZF',
+    sections = {
+        lualine_a = {
+            { 'mode', separator = { left = ' ', right = '' }, icon = '' },
         },
-        buffers_color = {
-          -- Same values as the general color option can be used here.
-          active = 'lualine_b_normal', -- Color for active buffer.
-          inactive = 'lualine_b_inactive', -- Color for inactive buffer.
+        lualine_b = {
+            {
+                'filetype',
+                icon_only = true,
+                padding = { left = 1, right = 0 },
+            },
+            'filename',
         },
-      },
+        lualine_c = {
+            {
+                'branch',
+                icon = '',
+            },
+            {
+                'diff',
+                symbols = { added = ' ', modified = ' ', removed = ' ' },
+                colored = false,
+            },
+        },
+        lualine_x = {
+            {
+                'diagnostics',
+                symbols = { error = ' ', warn = ' ', info = ' ', hint = '' },
+                update_in_insert = true,
+            },
+        },
+        lualine_y = { clients_lsp },
+        lualine_z = {
+            { 'location', separator = { left = '', right = ' ' }, icon = '' },
+        },
     },
-    lualine_c = {},
-    lualine_x = {},
-    lualine_y = {},
-    lualine_z = {},
-  },
-  -- winbar = {
-  --   lualine_z = {
-  --     {
-  --       'filename',
-  --       path = 1,
-  --       file_status = true,
-  --       newfile_status = true,
-  --     },
-  --   },
-  -- },
-  extensions = { 'fugitive', 'fzf', 'toggleterm', 'quickfix' },
+    inactive_sections = {
+        lualine_a = { 'filename' },
+        lualine_b = {},
+        lualine_c = {},
+        lualine_x = {},
+        lualine_y = {},
+        lualine_z = { 'location' },
+    },
+    extensions = { 'toggleterm', 'trouble' },
 }

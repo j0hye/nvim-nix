@@ -2,14 +2,11 @@
 local lspconfig = require('lspconfig')
 local lspdefaults = lspconfig.util.default_config
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-local cmp = require('cmp')
-local luasnip = require('luasnip')
 
 -- Add completion capabilites to LSP
 lspdefaults.capabilities = vim.tbl_deep_extend('force', lspdefaults.capabilities, capabilities)
 
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
-
 local kind_icons = {
     Class = '󰠱 ',
     Color = '󰏘 ',
@@ -50,24 +47,44 @@ local menu_icons = {
     vimtex = ' ',
 }
 
+local cmp = require('cmp')
+local types = require('cmp.types')
+local compare = require('cmp.config.compare')
+local luasnip = require('luasnip')
+
+---@type table<integer, integer>
+local modified_priority = {
+    [types.lsp.CompletionItemKind.Variable] = types.lsp.CompletionItemKind.Method,
+    [types.lsp.CompletionItemKind.Snippet] = 0, -- top
+    [types.lsp.CompletionItemKind.Keyword] = 0, -- top
+    [types.lsp.CompletionItemKind.Text] = 100, -- bottom
+}
+---@param kind integer: kind of completion entry
+local function modified_kind(kind)
+    return modified_priority[kind] or kind
+end
+
+-- local buffers = {
+--     name = 'buffer',
+--     option = {
+--         keyword_length = 3,
+--         get_bufnrs = function() -- from all buffers (less than 1MB)
+--             local bufs = {}
+--             for _, bufn in ipairs(vim.api.nvim_list_bufs()) do
+--                 local buf_size = vim.api.nvim_buf_get_offset(bufn, vim.api.nvim_buf_line_count(bufn))
+--                 if buf_size < 1024 * 1024 then
+--                     table.insert(bufs, bufn)
+--                 end
+--             end
+--             return bufs
+--         end,
+--     },
+-- }
+
 cmp.setup {
     snippet = {
         expand = function(args)
             luasnip.lsp_expand(args.body)
-        end,
-    },
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
-    formatting = {
-        fields = { 'menu', 'abbr', 'kind' },
-        expandable_indicator = true,
-        format = function(entry, item)
-            item.menu = menu_icons[entry.source.name]
-            item.kind = string.format('%s %s', kind_icons[item.kind] or '󰠱 ', item.kind)
-
-            return item
         end,
     },
     mapping = cmp.mapping.preset.insert {
@@ -98,4 +115,70 @@ cmp.setup {
         { name = 'luasnip' },
         { name = 'path' },
     },
+    formatting = {
+        fields = { 'menu', 'abbr', 'kind' },
+        expandable_indicator = true,
+        format = function(entry, item)
+            item.menu = menu_icons[entry.source.name]
+            item.kind = string.format('%s %s', kind_icons[item.kind] or '󰠱 ', item.kind)
+
+            return item
+        end,
+    },
+    sorting = {
+        -- https://github.com/hrsh7th/nvim-cmp/blob/main/lua/cmp/config/compare.lua
+        comparators = {
+            compare.offset,
+            compare.exact,
+            function(entry1, entry2) -- sort by length ignoring "=~"
+                local len1 = string.len(string.gsub(entry1.completion_item.label, '[=~()_]', ''))
+                local len2 = string.len(string.gsub(entry2.completion_item.label, '[=~()_]', ''))
+                if len1 ~= len2 then
+                    return len1 - len2 < 0
+                end
+            end,
+            compare.recently_used,
+            function(entry1, entry2) -- sort by compare kind (Variable, Function etc)
+                local kind1 = modified_kind(entry1:get_kind())
+                local kind2 = modified_kind(entry2:get_kind())
+                if kind1 ~= kind2 then
+                    return kind1 - kind2 < 0
+                end
+            end,
+            function(entry1, entry2) -- score by lsp, if available
+                local t1 = entry1.completion_item.sortText
+                local t2 = entry2.completion_item.sortText
+                if t1 ~= nil and t2 ~= nil and t1 ~= t2 then
+                    return t1 < t2
+                end
+            end,
+            compare.score,
+            compare.order,
+        },
+    },
+    confirm_opts = {
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = false,
+    },
+    experimental = {
+        ghost_text = false,
+    },
+    window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+    },
 }
+
+-- from nvim-autopairs
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done { map_char = { tex = '' } })
+
+-- from cmdline
+cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+        { name = 'path' },
+    }, {
+        { name = 'cmdline' },
+    }),
+})

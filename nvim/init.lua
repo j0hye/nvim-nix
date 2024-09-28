@@ -1,6 +1,10 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Colorscheme
+require('gruvbox').setup {}
+vim.cmd('colorscheme gruvbox')
+
 -- Enable relative line numbers
 vim.opt.nu = true
 vim.opt.rnu = true
