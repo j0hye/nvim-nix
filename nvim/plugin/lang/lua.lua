@@ -1,8 +1,7 @@
-local lspconfig = require('lspconfig')
+local M = {}
 
--- Lua
-if vim.fn.executable('lua-language-server') then
-    local server = {
+M.setup = function()
+    require('lspconfig').lua_ls.setup {
         settings = {
             Lua = {
                 workspace = {
@@ -33,5 +32,5 @@ if vim.fn.executable('lua-language-server') then
             },
         },
     }
-    lspconfig.lua_ls.setup(server)
 end
+return M

@@ -5,6 +5,11 @@ vim.g.plugin_lspconfig = 1
 
 local lspconfig = require('lspconfig')
 
+-- Languages
+require('plugins.lang.lua').setup()
+-- require('plugins.lang.nix')
+-- require('plugins.lang.c')
+--
 -- C
 if vim.fn.executable('clangd') then
     lspconfig.clangd.setup {}
