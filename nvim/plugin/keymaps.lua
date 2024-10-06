@@ -26,6 +26,16 @@ keymap.set('x', '<A-k>', ":m '<-2<cr>gv=gv", { desc = 'which_key_ignore' })
 keymap.set('i', '<A-j>', '<esc><cmd>m .+1<cr>==gi', { desc = 'which_key_ignore' })
 keymap.set('i', '<A-k>', '<esc><cmd>m .-2<cr>==gi', { desc = 'which_key_ignore' })
 
+-- Toggle autopairs
+keymap.set('n', '<leader>ua', function()
+    require('nvim-autopairs').toggle()
+    if require('nvim-autopairs').state.disabled then
+        vim.notify('Autopairs off', vim.log.levels.INFO)
+    else
+        vim.notify('Autopairs on', vim.log.levels.INFO)
+    end
+end, { desc = 'Toggle [a]utopairs' })
+
 -- Window movement
 keymap.set({ 'n', 'x' }, '<C-h>', '<C-w>h', { desc = 'which_key_ignore' })
 keymap.set({ 'n', 'x' }, '<C-j>', '<C-w>j', { desc = 'which_key_ignore' })

@@ -7,6 +7,7 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 lspdefaults.capabilities = vim.tbl_deep_extend('force', lspdefaults.capabilities, capabilities)
 
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
+
 local kind_icons = {
     Class = '󰠱 ',
     Color = '󰏘 ',

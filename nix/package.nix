@@ -71,6 +71,7 @@ with lib; let
     nvim-unception
     todo-comments-nvim
     nvim-autopairs
+    tabout-nvim
 
     # Deps
     nvim-web-devicons

@@ -4,8 +4,7 @@ end
 vim.g.plugin_lualine = 1
 
 local clients_lsp = function()
-    ---@diagnostic disable-next-line: deprecated
-    local clients = vim.lsp.get_active_clients()
+    local clients = vim.lsp.get_clients()
     if next(clients) == nil then
         return ''
     end
@@ -14,7 +13,7 @@ local clients_lsp = function()
     for _, client in pairs(clients) do
         table.insert(c, client.name)
     end
-    return '  ' .. table.concat(c, '|')
+    return '  ' .. table.concat(c, ' | ')
 end
 
 require('lualine').setup {
