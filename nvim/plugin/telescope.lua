@@ -36,6 +36,7 @@ pcall(require('telescope').load_extension, 'noice')
 
 -- See `:help telescope.builtin`
 local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = 'Search [d]iagnostics' })
 vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = 'Search [h]elp' })
 vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = 'Search [k]eymaps' })
 vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = 'Search [f]iles' })
