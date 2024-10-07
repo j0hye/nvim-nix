@@ -22,7 +22,7 @@
 
     blink-nvim = {
       url = "github:Saghen/blink.cmp";
-      flake = false;
+      flake = true;
     };
   };
 

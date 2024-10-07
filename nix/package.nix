@@ -13,29 +13,13 @@ with lib; let
       version = src.lastModifiedDate;
     };
 
-  mkCargoPlugin = src: pname:
-    pkgs.stdenv.mkDerivation {
-      inherit pname src;
-      version = src.lastModifiedDate;
-      nativeBuildInputs = [pkgs.cargo];
-
-      buildPhase = ''
-        cargo build --release
-      '';
-
-      installPhase = ''
-        mkdir -p $out/bin/
-        cp target/release/blink-cmp $out/bin/
-      '';
-    };
-
   # This is the helper function that builds the Neovim derivation.
   mkNeovim = pkgs.callPackage ./mkNeovim.nix {};
 
   # vimPlugins
   all-plugins = with pkgs.vimPlugins; [
     # Completion
-    (mkCargoPlugin inputs.blink-nvim "blink-nvim")
+    inputs.blink-nvim.packages.${system}.blink-cmp
     # nvim-cmp
     # cmp-nvim-lsp
     # cmp-path
