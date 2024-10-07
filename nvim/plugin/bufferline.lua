@@ -18,4 +18,3 @@ vim.api.nvim_create_autocmd('BufAdd', {
         end)
     end,
 })
-vim.api.nvim_set_hl(0, 'BufferLineFill', { bg = '#3c3836' })

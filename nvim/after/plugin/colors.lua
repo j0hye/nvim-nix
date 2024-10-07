@@ -20,3 +20,5 @@ hl(0, 'DiagnosticSignError', { bg = 'None', fg = '#FB4934' })
 hl(0, 'DiagnosticSignInfo', { bg = 'None', fg = '#83A598' })
 hl(0, 'DiagnosticSignHint', { bg = 'None', fg = '#8EC07C' })
 hl(0, 'DiagnosticSignOk', { bg = 'None', fg = '#B8BB26' })
+
+hl(0, 'BufferLineFill', { bg = '#3c3836' })
