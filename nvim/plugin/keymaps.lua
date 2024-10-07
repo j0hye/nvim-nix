@@ -67,7 +67,7 @@ end, { desc = 'Toggle relative [l]ine numbers' })
 vim.keymap.set('n', '<leader>un', '<cmd>Telescope notify<CR>', { desc = 'Show [n]otifications' })
 
 -- Shortcut for expanding to current buffer's directory in command mode
-keymap.set('c', '%%', function()
+keymap.set({ 'c', 't' }, '%%', function()
     if fn.getcmdtype() == ':' then
         return fn.expand('%:h') .. '/'
     else

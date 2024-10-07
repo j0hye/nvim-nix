@@ -18,13 +18,15 @@ with lib; let
   # vimPlugins
   all-plugins = with pkgs.vimPlugins; [
     # Completion
-    nvim-cmp
-    cmp-nvim-lsp
-    cmp-path
-    cmp_luasnip
+    (mkNvimPlugin inputs.blink-nvim "blink-nvim")
+    # nvim-cmp
+    # cmp-nvim-lsp
+    # cmp-path
+    # cmp_luasnip
 
     # Snippets
     luasnip
+    friendly-snippets
 
     # Formatters and LSP
     conform-nvim

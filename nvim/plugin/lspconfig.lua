@@ -58,21 +58,21 @@ end
 --     lspconfig.nixd.setup {}
 -- end
 
--- LSP Signature setup
-local sig_opts = {
-    bind = true,
-    floating_window = false,
-    handler_opts = { border = 'rounded' },
-    hint_enable = true,
-    hint_prefix = {
-        above = '↙ ', -- when the hint is on the line above the current line
-        current = '← ', -- when the hint is on the same line
-        below = '↖ ', -- when the hint is on the line below the current line
-    },
-    wrap = false,
-    hi_parameter = 'LspSignatureActiveParameter',
-}
-require('lsp_signature').setup(sig_opts)
+-- -- LSP Signature setup
+-- local sig_opts = {
+--     bind = true,
+--     floating_window = false,
+--     handler_opts = { border = 'rounded' },
+--     hint_enable = true,
+--     hint_prefix = {
+--         above = '↙ ', -- when the hint is on the line above the current line
+--         current = '← ', -- when the hint is on the same line
+--         below = '↖ ', -- when the hint is on the line below the current line
+--     },
+--     wrap = false,
+--     hi_parameter = 'LspSignatureActiveParameter',
+-- }
+-- require('lsp_signature').setup(sig_opts)
 
 -- Configure Neovim diagnostic messages
 local function prefix_diagnostic(prefix, diagnostic)
