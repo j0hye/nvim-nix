@@ -21,7 +21,7 @@
     # };
 
     blink-nvim = {
-      url = "github:Saghen/blink.cmp?ref=v0.2.0";
+      url = "github:Saghen/blink.cmp";
       flake = false;
     };
   };

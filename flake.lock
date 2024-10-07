@@ -3,16 +3,15 @@
     "blink-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1728329724,
-        "narHash": "sha256-S25d0GbHtwKe7XNo7EGZ4CjO2XTuyXpJWCQPR7kXgPk=",
+        "lastModified": 1728335726,
+        "narHash": "sha256-cDS4pCrO3MJUN66Bs8UqXBbVFiKYjBpMtCN//NQemlk=",
         "owner": "Saghen",
         "repo": "blink.cmp",
-        "rev": "8fb9d72ee4e7ce79144df48dad9d58e102053bd3",
+        "rev": "8684a8ee10281f3cfd6eac6c9077ce2b5f04a61b",
         "type": "github"
       },
       "original": {
         "owner": "Saghen",
-        "ref": "v0.2.0",
         "repo": "blink.cmp",
         "type": "github"
       }
