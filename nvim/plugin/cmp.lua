@@ -1,3 +1,4 @@
+local ls = require('luasnip')
 require('blink.cmp').setup {
     -- for keymap, all values may be string | string[]
     -- use an empty table to disable a keymap
@@ -12,8 +13,8 @@ require('blink.cmp').setup {
         hide_documentation = {},
         scroll_documentation_up = '<C-b>',
         scroll_documentation_down = '<C-f>',
-        snippet_forward = '<C-l>',
-        snippet_backward = '<C-h>',
+        snippet_forward = {},
+        snippet_backward = {},
     },
     windows = {
         autocomplete = {
@@ -36,7 +37,17 @@ require('blink.cmp').setup {
     -- adjusts spacing to ensure icons are aligned
     nerd_font_variant = 'normal',
 }
+vim.keymap.set({ 'i', 's' }, '<C-l>', function()
+    if ls.expand_or_locally_jumpable() then
+        ls.expand_or_jump()
+    end
+end, { desc = 'Snippet jump right' })
 
+vim.keymap.set({ 'i', 's' }, '<C-h>', function()
+    if ls.expand_or_locally_jumpable(-1) then
+        ls.expand_or_jump(-1)
+    end
+end, { desc = 'Snippet jump left' })
 -- -- See `:help cmp`
 -- local lspconfig = require('lspconfig')
 -- local lspdefaults = lspconfig.util.default_config
