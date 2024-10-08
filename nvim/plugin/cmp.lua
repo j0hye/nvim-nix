@@ -11,8 +11,8 @@ require('blink.cmp').setup {
         hide_documentation = {},
         scroll_documentation_up = '<C-b>',
         scroll_documentation_down = '<C-f>',
-        snippet_forward = '<Nop>',
-        snippet_backward = '<Nop>',
+        snippet_forward = '<C-l>',
+        snippet_backward = '<C-h>',
     },
     trigger = {
         signature_help = {
@@ -69,6 +69,7 @@ require('tabout').setup {
     ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
     exclude = {}, -- tabout will ignore these filetypes
 }
+
 -- -- See `:help cmp`
 -- local lspconfig = require('lspconfig')
 -- local lspdefaults = lspconfig.util.default_config

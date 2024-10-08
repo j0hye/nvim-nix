@@ -15,9 +15,9 @@ if vim.fn.executable('lua-language-server') then
     local server = {
         settings = {
             Lua = {
-                workspace = {
-                    checkThirdParty = false,
-                },
+                -- workspace = {
+                --     checkThirdParty = false,
+                -- },
                 codeLens = {
                     enable = true,
                 },
@@ -48,6 +48,7 @@ if vim.fn.executable('lua-language-server') then
         },
     }
     lspconfig.lua_ls.setup(server)
+    require('lazydev').setup {}
 end
 
 -- Nix
