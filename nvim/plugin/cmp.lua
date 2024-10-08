@@ -1,4 +1,3 @@
-local ls = require('luasnip')
 require('blink.cmp').setup {
     -- for keymap, all values may be string | string[]
     -- use an empty table to disable a keymap
@@ -8,7 +7,6 @@ require('blink.cmp').setup {
         accept = '<C-y>',
         select_prev = { '<Up>', '<C-p>' },
         select_next = { '<Down>', '<C-n>' },
-
         show_documentation = {},
         hide_documentation = {},
         scroll_documentation_up = '<C-b>',
@@ -37,17 +35,35 @@ require('blink.cmp').setup {
     -- adjusts spacing to ensure icons are aligned
     nerd_font_variant = 'normal',
 }
+
 vim.keymap.set({ 'i', 's' }, '<C-l>', function()
-    if ls.expand_or_locally_jumpable() then
-        ls.expand_or_jump()
-    end
+    require('blink.cmp').snippet_forward()
 end, { desc = 'Snippet jump right' })
 
 vim.keymap.set({ 'i', 's' }, '<C-h>', function()
-    if ls.expand_or_locally_jumpable(-1) then
-        ls.expand_or_jump(-1)
-    end
+    require('blink.cmp').snippet_backward()
 end, { desc = 'Snippet jump left' })
+
+require('tabout').setup {
+    tabkey = '<Tab>', -- key to trigger tabout, set to an empty string to disable
+    backwards_tabkey = '<S-Tab>', -- key to trigger backwards tabout, set to an empty string to disable
+    act_as_tab = true, -- shift content if tab out is not possible
+    act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+    default_tab = '<C-t>', -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+    default_shift_tab = '<C-d>', -- reverse shift default action,
+    enable_backwards = true, -- well ...
+    completion = false, -- if the tabkey is used in a completion pum
+    tabouts = {
+        { open = "'", close = "'" },
+        { open = '"', close = '"' },
+        { open = '`', close = '`' },
+        { open = '(', close = ')' },
+        { open = '[', close = ']' },
+        { open = '{', close = '}' },
+    },
+    ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
+    exclude = {}, -- tabout will ignore these filetypes
+}
 -- -- See `:help cmp`
 -- local lspconfig = require('lspconfig')
 -- local lspdefaults = lspconfig.util.default_config

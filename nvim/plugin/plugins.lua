@@ -14,4 +14,4 @@ require('dressing').setup {}
 require('todo-comments').setup {}
 require('guess-indent').setup {}
 require('nvim-autopairs').setup {}
-require('tabout').setup {}
+-- require('tabout').setup {}
