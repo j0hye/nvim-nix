@@ -11,8 +11,13 @@ require('blink.cmp').setup {
         hide_documentation = {},
         scroll_documentation_up = '<C-b>',
         scroll_documentation_down = '<C-f>',
-        snippet_forward = {},
-        snippet_backward = {},
+        snippet_forward = '<Nop>',
+        snippet_backward = '<Nop>',
+    },
+    trigger = {
+        signature_help = {
+            enabled = true,
+        },
     },
     windows = {
         autocomplete = {

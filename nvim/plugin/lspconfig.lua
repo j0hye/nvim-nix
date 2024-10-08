@@ -61,9 +61,9 @@ end
 -- -- LSP Signature setup
 -- local sig_opts = {
 --     bind = true,
---     floating_window = false,
+--     floating_window = true,
 --     handler_opts = { border = 'rounded' },
---     hint_enable = true,
+--     hint_enable = false,
 --     hint_prefix = {
 --         above = '↙ ', -- when the hint is on the line above the current line
 --         current = '← ', -- when the hint is on the same line
