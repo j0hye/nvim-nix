@@ -22,3 +22,6 @@ hl(0, 'DiagnosticSignHint', { bg = 'None', fg = '#8EC07C' })
 hl(0, 'DiagnosticSignOk', { bg = 'None', fg = '#B8BB26' })
 
 hl(0, 'BufferLineFill', { bg = '#3c3836' })
+
+hl(0, 'BlinkCmpMenu', { link = 'Normal' })
+hl(0, 'BlinkCmpMenuBorder', { link = 'Normal' })
