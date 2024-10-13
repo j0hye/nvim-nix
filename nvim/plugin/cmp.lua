@@ -40,15 +40,15 @@ require('blink.cmp').setup {
     -- adjusts spacing to ensure icons are aligned
     nerd_font_variant = 'normal',
 }
-
-vim.keymap.set({ 'i', 's' }, '<C-l>', function()
-    require('blink.cmp').snippet_forward()
-end, { desc = 'Snippet jump right' })
-
-vim.keymap.set({ 'i', 's' }, '<C-h>', function()
-    require('blink.cmp').snippet_backward()
-end, { desc = 'Snippet jump left' })
-
+--
+-- vim.keymap.set({ 'i', 's' }, '<C-l>', function()
+--     require('blink.cmp').snippet_forward()
+-- end, { desc = 'Snippet jump right' })
+--
+-- vim.keymap.set({ 'i', 's' }, '<C-h>', function()
+--     require('blink.cmp').snippet_backward()
+-- end, { desc = 'Snippet jump left' })
+--
 require('tabout').setup {
     tabkey = '<Tab>', -- key to trigger tabout, set to an empty string to disable
     backwards_tabkey = '<S-Tab>', -- key to trigger backwards tabout, set to an empty string to disable
